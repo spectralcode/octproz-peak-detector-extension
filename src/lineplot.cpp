@@ -1,7 +1,7 @@
 #include "lineplot.h"
 #include <QPainterPathStroker>
 
-LinePlot::LinePlot(QWidget *parent) : QCustomPlot(parent){
+LinePlot::LinePlot(QWidget* parent) : QCustomPlot(parent){
 	//default colors
 	this->referenceCurveAlpha = 100;
 	this->setBackground( QColor(50, 50, 50));
@@ -163,7 +163,7 @@ void LinePlot::plotReferenceCurve(QVector<qreal> x, QVector<qreal> y) {
 	this->replot();
 }
 
-void LinePlot::plotCurves(double *curve, double *referenceCurve, unsigned int samples) {
+void LinePlot::plotCurves(double* curve, double* referenceCurve, unsigned int samples) {
 	if(samples == 0){return;}
 	int size = static_cast<int>(samples);
 
@@ -207,7 +207,7 @@ void LinePlot::plotCurves(double *curve, double *referenceCurve, unsigned int sa
 	 this->replot();
 }
 
-void LinePlot::plotCurves(float *curve, float *referenceCurve, unsigned int samples) {
+void LinePlot::plotCurves(float* curve, float* referenceCurve, unsigned int samples) {
 	if(samples == 0){return;}
 	int size = static_cast<int>(samples);
 
@@ -301,7 +301,7 @@ void LinePlot::zoomOutSlightly() {
 }
 
 
-void LinePlot::contextMenuEvent(QContextMenuEvent *event) {
+void LinePlot::contextMenuEvent(QContextMenuEvent* event) {
 	QMenu menu(this);
 	QAction savePlotAction(tr("Save Plot as..."), this);
 	connect(&savePlotAction, &QAction::triggered, this, &LinePlot::slot_saveToDisk);
@@ -309,7 +309,7 @@ void LinePlot::contextMenuEvent(QContextMenuEvent *event) {
 	menu.exec(event->globalPos());
 }
 
-void LinePlot::mouseMoveEvent(QMouseEvent *event) {
+void LinePlot::mouseMoveEvent(QMouseEvent* event) {
 	if(!(event->buttons() & Qt::LeftButton)){
 		double x = this->xAxis->pixelToCoord(event->pos().x());
 		double y = this->yAxis->pixelToCoord(event->pos().y());
@@ -319,7 +319,7 @@ void LinePlot::mouseMoveEvent(QMouseEvent *event) {
 	}
 }
 
-void LinePlot::resizeEvent(QResizeEvent *event) {
+void LinePlot::resizeEvent(QResizeEvent* event) {
 	if(this->drawRoundCorners){
 		QRect plotRect = this->rect();
 		const int radius = 6;
@@ -331,8 +331,8 @@ void LinePlot::resizeEvent(QResizeEvent *event) {
 	QCustomPlot::resizeEvent(event);
 }
 
-void LinePlot::changeEvent(QEvent *event) {
-	if(event->ActivationChange){
+void LinePlot::changeEvent(QEvent* event) {
+	if(event->type() == QEvent::ActivationChange){
 		if(!this->isEnabled()){
 			this->curveColor.setAlpha(55);
 			this->referenceCurveColor.setAlpha(25);
@@ -348,16 +348,16 @@ void LinePlot::changeEvent(QEvent *event) {
 		}
 	}
 	QCustomPlot::changeEvent(event);
-
 }
 
-void LinePlot::mouseDoubleClickEvent(QMouseEvent *event) {
+void LinePlot::mouseDoubleClickEvent(QMouseEvent* event) {
 	this->rescaleAxes();
 	this->zoomOutSlightly();
 	if(customRange){
 		this->scaleYAxis(this->customRangeLower, this->customRangeUpper);
 	}
 	this->replot();
+	QCustomPlot::mouseDoubleClickEvent(event);
 }
 
 void LinePlot::slot_saveToDisk() {
