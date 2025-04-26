@@ -17,6 +17,7 @@
 #define PEAKDETECTOR_MIN_THRESHOLD "min_threshold"
 #define PEAKDETECTOR_SHOW_MIN_THRESHOLD "show_min_threshold"
 #define PEAKDETECTOR_AUTOSCALING_ENABLED "auto_scaling_enabled"
+#define PEAKDETECTOR_WINDOW_STATE "window_state"
 
 
 enum BUFFER_SOURCE{
@@ -37,10 +38,9 @@ struct PeakDetectorParameters {
 	double minThreshold;
 	bool showMinThreshold;
 	bool autoScalingEnabled;
+	QByteArray windowState;
 };
 Q_DECLARE_METATYPE(PeakDetectorParameters)
 
 
 #endif //PEAKDETECTORPARAMETERS_H
-
-

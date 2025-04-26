@@ -28,7 +28,7 @@ public:
 	Ui::PeakDetectorForm* ui;
 
 protected:
-
+	bool eventFilter(QObject* watched, QEvent* event) override;
 
 public slots:
 	void setMaximumFrameNr(int maximum);

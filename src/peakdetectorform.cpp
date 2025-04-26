@@ -79,6 +79,7 @@ PeakDetectorForm::PeakDetectorForm(QWidget *parent) :
 		emit paramsChanged(this->parameters);
 	});
 
+	this->installEventFilter(this);
 
 	//default values
 	this->parameters.bufferNr= -1;
@@ -110,6 +111,7 @@ void PeakDetectorForm::setSettings(QVariantMap settings) {
 		this->parameters.minThreshold = settings.value(PEAKDETECTOR_MIN_THRESHOLD).toDouble();
 		this->parameters.showMinThreshold = settings.value(PEAKDETECTOR_SHOW_MIN_THRESHOLD).toBool();
 		this->parameters.autoScalingEnabled = settings.value(PEAKDETECTOR_AUTOSCALING_ENABLED).toBool();
+		this->parameters.windowState = settings.value(PEAKDETECTOR_WINDOW_STATE).toByteArray();
 	}
 
 	// Update GUI elements
@@ -121,6 +123,7 @@ void PeakDetectorForm::setSettings(QVariantMap settings) {
 	this->ui->checkBox_showMinThreshold->setChecked(this->parameters.showMinThreshold);
 	this->ui->checkBox_autoscaling->setChecked(this->parameters.autoScalingEnabled);
 	this->enableAutoScalingLinePlot(this->parameters.autoScalingEnabled);
+	this->restoreGeometry(this->parameters.windowState);
 }
 
 void PeakDetectorForm::getSettings(QVariantMap* settings) {
@@ -139,6 +142,19 @@ void PeakDetectorForm::getSettings(QVariantMap* settings) {
 	settings->insert(PEAKDETECTOR_MIN_THRESHOLD, this->parameters.minThreshold);
 	settings->insert(PEAKDETECTOR_SHOW_MIN_THRESHOLD, this->parameters.showMinThreshold);
 	settings->insert(PEAKDETECTOR_AUTOSCALING_ENABLED, this->parameters.autoScalingEnabled);
+	settings->insert(PEAKDETECTOR_WINDOW_STATE, this->parameters.windowState);
+}
+
+bool PeakDetectorForm::eventFilter(QObject* watched, QEvent* event) {
+	if (watched == this) {
+		if (event->type() == QEvent::Resize || event->type() == QEvent::Move) {
+			if (this->isVisible()) {
+				this->parameters.windowState = this->saveGeometry();
+				emit paramsChanged(this->parameters);
+			}
+		}
+	}
+	return QWidget::eventFilter(watched, event);
 }
 
 void PeakDetectorForm::setMaximumFrameNr(int maximum) {
@@ -190,4 +206,3 @@ void PeakDetectorForm::displayMinThreshold(double value) {
 void PeakDetectorForm::enableAutoScalingLinePlot(bool autoScaleEnabled) {
 	this->linePlot->enableAutoScaling(autoScaleEnabled);
 }
-
